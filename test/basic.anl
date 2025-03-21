@@ -1,0 +1,12 @@
+[h:big] Hello, World
+lorem ipsum dolor sit amet ;
+consectetur adipiscing elit ;
+
+[b] this is a bold text
+[img:images/apple.png] and here is an alt text
+
+# math notation
+[math:start]
+6+5 = 11
+12/2 = 6
+[math:end]

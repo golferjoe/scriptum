@@ -1,0 +1,8 @@
+Awesome Notes Language Transpiler
+
+Tool for transpiling ANL files to HTML documents
+
+Usage:
+$ ./run.sh file_name
+
+Project is under MIT license
