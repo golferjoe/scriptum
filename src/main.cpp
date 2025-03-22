@@ -4,9 +4,11 @@
 #include <string>
 
 #include "base64.h"
+#include "result.h"
 
 // TODO: modularize code
 // TODO: make image file path relative to source file
+// TODO: implement math notation
 
 std::string trim(const std::string &str) {
     auto start = str.find_first_not_of(" \t\n");
@@ -40,46 +42,55 @@ std::string getMimeType(const std::string &ext) {
         return "application/octet-stream";
 }
 
-std::string parseLine(const std::string &line) {
-    const auto &trimmed = trim(line);
-    const auto closingBracket = trimmed.find(']');
+Result<std::string> parseLine(const std::string &line) {
+    const auto closingBracket = line.find(']');
 
     // extract tag
-    if (trimmed.starts_with("[h:")) {
+    if (line.starts_with("[h:")) {
         // find tag closing bracket position
         if (closingBracket == std::string::npos) {
-            return "";
+            return err("Missing closing bracket for heading tag");
         }
 
         // extract tag type and text
-        const std::string tag = trimmed.substr(3, closingBracket - 3);
-        const std::string text = trim(trimmed.substr(closingBracket + 1));
+        const std::string tag = line.substr(3, closingBracket - 3);
+        const std::string text = trim(line.substr(closingBracket + 1));
 
         // parse into html heading
         if (tag == "big") {
-            return std::format("<h1>{}<h2>", text);
+            return ok(std::format("<h1>{}<h2>", text));
         } else if (tag == "med") {
-            return std::format("<h2>{}<h2>", text);
+            return ok(std::format("<h2>{}<h2>", text));
         } else if (tag == "sma") {
-            return std::format("<h3>{}<h3>", text);
+            return ok(std::format("<h3>{}<h3>", text));
         }
-    } else if (trimmed.starts_with("[b]")) {
+    } else if (line.starts_with("[b]")) {
         if (closingBracket == std::string::npos) {
-            return "";
+            return err("Missing closing bracket for bold tag");
         }
-        const std::string text = trim(trimmed.substr(closingBracket + 1));
-        return std::format("<b>{}</b>", text);
-    } else if (trimmed.starts_with("[img:")) {
+        const std::string text = trim(line.substr(closingBracket + 1));
+        return ok(std::format("<b>{}</b>", text));
+    } else if (line.starts_with("[i]")) {
+        if (closingBracket == std::string::npos) {
+            return err("Missing closing bracket for italic tag");
+        }
+        const std::string text = trim(line.substr(closingBracket + 1));
+        return ok(std::format("<i>{}</i>", text));
+    } else if (line.starts_with("[img:")) {
+        if (closingBracket == std::string::npos) {
+            return err("Missing closing bracket for image tag");
+        }
+
         // extract image path
-        const auto colonPos = trimmed.find(':');
-        const std::string imageName = trimmed.substr(colonPos + 1, closingBracket - 5);
+        const auto colonPos = line.find(':');
+        const std::string imageName = line.substr(colonPos + 1, closingBracket - 5);
 
         // open image and check if it exists
         std::ifstream image(imageName);
 
         if (!image.is_open()) {
             // TODO: somehow return error and abort "compilation"
-            return "failed to open image file";
+            return err("failed to open image file");
         }
 
         std::string content(std::istreambuf_iterator<char>(image), {});
@@ -91,10 +102,11 @@ std::string parseLine(const std::string &line) {
         const auto &fileExt = getFileExt(imageName);
         const auto &mimeType = getMimeType(fileExt);
 
-        return std::format("<img src=\"data:{};base64,{}\"/>", mimeType, encoded);
+        return ok(std::format("<img src=\"data:{};base64,{}\"/>", mimeType, encoded));
     }
 
-    return "";
+    // no tag found, return as plain text
+    return ok(line);
 }
 
 int main(int argc, char *argv[]) {
@@ -128,11 +140,20 @@ int main(int argc, char *argv[]) {
     // read file line by line
     std::string line;
     while (std::getline(source, line)) {
-        const auto &html = parseLine(line);
+        const auto &trimmed = trim(line);
 
-        if (!html.empty()) {
-            output << html << "\n";
+        if (trimmed.empty() || trimmed.starts_with("#")) {
+            continue;
         }
+
+        const auto &result = parseLine(line);
+
+        if (!result.is_ok) {
+            std::print("[ERROR] {}\n", result.error);
+            return 1;
+        }
+
+        output << result.value << "\n";
     }
 
     // finish html doc

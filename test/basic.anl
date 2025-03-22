@@ -4,6 +4,7 @@ consectetur adipiscing elit ;
 
 [b] this is a bold text
 [img:test/apple.jpg]
+[i] very italic text
 
 # math notation
 [math:start]
