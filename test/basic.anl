@@ -3,7 +3,7 @@ lorem ipsum dolor sit amet ;
 consectetur adipiscing elit ;
 
 [b] this is a bold text
-[img:images/apple.png] and here is an alt text
+[img:test/apple.jpg]
 
 # math notation
 [math:start]
