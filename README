@@ -1,5 +1,5 @@
 Awesome Notes Language Transpiler
 
-Tool for transpiling ANL files to HTML documents
+rewritten in Rust because C++ (imo) s*cks
 
 Project is under MIT license
