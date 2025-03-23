@@ -1,7 +1,11 @@
-use std::fs::File;
+mod error;
+mod parser;
 
-use anyhow::Context;
+use std::{fs::File, io::{BufRead, BufReader}};
+
 use clap::Parser;
+use error::CompilerError;
+use parser::parse_line;
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -14,14 +18,18 @@ struct Args {
     output: String,
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<(), CompilerError> {
     let args = Args::parse();
 
-    let source = File::open(&args.source)
-        .with_context(|| format!("Failed to open source file '{}'! Does it exists?", args.source))?;
+    let source = File::open(&args.source).map_err(CompilerError::FileOpen)?;
 
-    let output = File::create(&args.output)
-        .context("Failed to create output file! Do I have permissions?")?;
+    let reader = BufReader::new(source);
+    for line in reader.lines() {
+        let line = line.map_err(CompilerError::ReadLine)?;
+        let _parsed_line = parse_line(&line)?;
+    }
+
+    // TODO: store html in a variable and write it to file after parsing
 
     println!("Compilation finished!");
 
