@@ -1,13 +1,7 @@
-[h:big] Hello, World
+[h:lg] Hello, World
 lorem ipsum dolor sit amet ;
 consectetur adipiscing elit ;
 
 [b] this is a bold text
 [img:test/apple.jpg]
 [i] very italic text
-
-# math notation
-[math:start]
-6+5 = 11
-12/2 = 6
-[math:end]

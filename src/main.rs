@@ -4,8 +4,10 @@ mod parser;
 use std::{fs::File, io::{BufRead, BufReader}};
 
 use clap::Parser;
-use error::CompilerError;
+use error::{CompilerError, CompilerResult};
 use parser::parse_line;
+
+// TODO: colored output
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -18,20 +20,32 @@ struct Args {
     output: String,
 }
 
-fn main() -> Result<(), CompilerError> {
-    let args = Args::parse();
-
-    let source = File::open(&args.source).map_err(CompilerError::FileOpen)?;
+fn compile(args: &Args) -> CompilerResult<()> {
+    let source = File::open(&args.source)
+        .map_err(CompilerError::FileOpen)?;
 
     let reader = BufReader::new(source);
-    for line in reader.lines() {
+    for (line_number, line) in reader.lines().enumerate() {
         let line = line.map_err(CompilerError::ReadLine)?;
-        let _parsed_line = parse_line(&line)?;
+        let parsed_line = parse_line(&line, line_number + 1)?;
+        println!("{parsed_line}");
     }
 
     // TODO: store html in a variable and write it to file after parsing
 
-    println!("Compilation finished!");
-
     Ok(())
+}
+
+fn main() {
+    let args = Args::parse();
+
+    println!("Current working directory: {:?}", std::env::current_dir());
+    println!("Starting compilation...");
+
+    if let Err(why) = compile(&args) {
+        eprintln!("[ERROR] {why}");
+        eprintln!("Aborting compilation.")
+    } else {
+        println!("Compilation finished!");
+    }
 }
