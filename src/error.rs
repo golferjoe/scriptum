@@ -7,6 +7,10 @@ pub enum CompilerError {
     FileOpen(#[source] std::io::Error),
     #[error("Failed to read a line from source file: {0}")]
     ReadLine(#[source] std::io::Error),
+    #[error("Failed to create output file: {0}")]
+    OutputCreate(#[source] std::io::Error),
+    #[error("Failed to write to output file: {0}")]
+    OutputWrite(#[source] std::io::Error),
 
     // Parsing
     #[error("Missing tag closing bracket on line {0}!")]

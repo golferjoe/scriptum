@@ -51,14 +51,13 @@ fn two_props_tag(tag: &[&str], line_number: usize) -> CompilerResult<(String, St
 
             // determine file mime type
             let mime = mime_guess::from_path(tag_prop).first_or_octet_stream();
-            println!("mime: {mime:?}");
 
             // convert to base64
             let base64_data = BASE64_STANDARD.encode(image_data);
 
             // embed into tag
             (
-                format!(r#"<img src="data:{mime:?};base64,{base64_data}"/>"#),
+                format!(r#"<img src="data:{mime};base64,{base64_data}"/>"#),
                 String::new(),
             )
         }
