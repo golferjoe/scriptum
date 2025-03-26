@@ -3,13 +3,13 @@ pub type CompilerResult<T> = Result<T, CompilerError>;
 #[derive(Debug, thiserror::Error)]
 pub enum CompilerError {
     // I/O
-    #[error("Failed to open source file: {0}")]
+    #[error("Failed to open source file\n==> {0}")]
     FileOpen(#[source] std::io::Error),
-    #[error("Failed to read a line from source file: {0}")]
+    #[error("Failed to read a line from source file\n==> {0}")]
     ReadLine(#[source] std::io::Error),
-    #[error("Failed to create output file: {0}")]
+    #[error("Failed to create output file\n==> {0}")]
     OutputCreate(#[source] std::io::Error),
-    #[error("Failed to write to output file: {0}")]
+    #[error("Failed to write to output file\n==> {0}")]
     OutputWrite(#[source] std::io::Error),
 
     // Parsing
@@ -25,6 +25,6 @@ pub enum CompilerError {
     // - Image
     #[error("Failed to open attached image '{0}' at line {1}!")]
     InvalidImage(String, usize),
-    #[error("Failed to read image '{0}' data: {1}")]
+    #[error("Failed to read image '{0}' data\n==> {1}")]
     ImageData(String, #[source] std::io::Error),
 }
