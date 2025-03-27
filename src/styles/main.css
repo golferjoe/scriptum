@@ -1,0 +1,19 @@
+.main {
+  display: flex;
+  flex-direction: column;
+
+  width: min(80%, 600px);
+  margin: 0 auto;
+  padding: 1.2rem 0;
+
+  font-family: monospace;
+  font-size: 1.2rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+  padding: 0;
+}

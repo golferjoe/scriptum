@@ -83,9 +83,9 @@ fn parse_tag(tag: &[&str], props_count: usize, line_number: usize) -> CompilerRe
 pub fn parse_line(line: &str, line_number: usize) -> Result<String, CompilerError> {
     // TODO: test with multi-byte characters
 
-    // check if line starts with tag, otherwise return plain text
+    // check if line starts with a tag
     if !line.starts_with('[') {
-        return Ok(line.to_string());
+        return Ok(format!("<p>{line}</p>"));
     }
 
     // get closing bracket position, will be used for text extraction
