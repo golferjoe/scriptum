@@ -59,7 +59,16 @@ fn print_help() {
 }
 
 fn print_version() {
-    todo!()
+    let name = env!("CARGO_PKG_NAME");
+    let version = env!("CARGO_PKG_VERSION");
+    let author = env!("CARGO_PKG_AUTHORS");
+
+    println!(
+        "{} v{version}\nmade by {}\n\n{}",
+        name.purple().bold(),
+        author.purple(),
+        "https://github.com/golferjoe/scriptum".underline(),
+    );
 }
 
 pub fn comp_msg<S>(text: S) where S: ToString + Display {
