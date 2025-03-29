@@ -3,6 +3,14 @@ use std::fmt::Display;
 use clap::{error::ErrorKind, CommandFactory, FromArgMatches, Parser};
 use clap_help::Printer;
 use colored::Colorize;
+use termimad::{crossterm::style::Color, CompoundStyle};
+
+const INTRO: &str = "
+
+Super-cool CLI tool for compiling Scriptum notes to HTML documents.
+";
+
+const HELP_COLOR: Color = Color::Magenta;
 
 #[derive(Debug, Parser)]
 #[command(version)]
@@ -36,16 +44,18 @@ pub fn parse_args() -> CliArgs {
     }
 }
 
-static INTRO: &str = "
-
-I need to write something here
-";
-
 fn print_help() {
-    Printer::new(CliArgs::command())
+    let mut printer = Printer::new(CliArgs::command())
         .with("introduction", INTRO)
-        .without("author")
-        .print_help();
+        .with("options", clap_help::TEMPLATE_OPTIONS_MERGED_VALUE)
+        .without("author");
+
+    let skin = printer.skin_mut();
+    skin.headers[0].compound_style.set_fg(HELP_COLOR);
+    skin.bold.set_fg(HELP_COLOR);
+    skin.italic = CompoundStyle::with_fg(HELP_COLOR);
+
+    printer.print_help();
 }
 
 fn print_version() {

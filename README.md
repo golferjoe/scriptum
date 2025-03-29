@@ -4,7 +4,7 @@
 
 ## Preview
 
-| Scriptum Note                          | Compiled HTML                        |
+| Scriptum Note                          | Compiled HTML (unminified)           |
 | -------------------------------------- | ------------------------------------ |
 | ![scriptum input](screenshots/scr.png) | ![html output](screenshots/html.png) |
 
@@ -13,6 +13,7 @@
 - Explicit syntax
 - Base64 image embedding
 - Shipped with inline CSS for pretty looks
+- Minified HTML on output
 - Fast CLI compiler written in Rust
 
 ## Building the Compiler
