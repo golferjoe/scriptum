@@ -2,6 +2,12 @@
 
 **Scriptum** is a language designed for writing notes and blogs that compile to clean, portable HTML. Powered by compiler called `sptc`, Scriptum makes it easy to create self-contained documents - perfect for personal notes.
 
+## Preview
+
+| Scriptum Note                          | Compiled HTML                        |
+| -------------------------------------- | ------------------------------------ |
+| ![scriptum input](screenshots/scr.png) | ![html output](screenshots/html.png) |
+
 ## Features
 
 - Explicit syntax
@@ -27,7 +33,7 @@ After running these commands, the compiler can be found at `target/release/sptc`
 sptc -s <file name>.scr
 ```
 
-### Options:
+### Options
 
 | Flag        | Description                              | Optional |
 | ----------- | ---------------------------------------- | -------- |

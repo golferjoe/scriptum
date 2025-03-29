@@ -11,7 +11,7 @@ const HTML_HEAD: &str = r#"
     <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>ANL</title>
+        <title>Scriptum</title>
         <style>
 "#;
 
