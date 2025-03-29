@@ -1,6 +1,6 @@
 use std::{fs::File, io::{BufWriter, Write}, path::Path};
 
-use crate::{cli::{comp_msg, CliArgs}, error::{CompilerError, CompilerResult}};
+use crate::{cli::{comp_msg, CliArgs}, error::{CompilerError, CompilerResult}, utils::{minify_html, minify_css}};
 
 const NORMALIZE_CSS: &str = include_str!("styles/normalize.css");
 const MAIN_CSS: &str = include_str!("styles/main.css");
@@ -43,6 +43,18 @@ fn output_file_name(args: &CliArgs) -> String {
     }
 }
 
+// Joins and minifies all HTML head code (i.e. HTML_HEAD, CSS, HTML_BODY)
+fn html_head() -> String {
+    let mut out = String::new();
+
+    out.push_str(&minify_html(HTML_HEAD));
+    out.push_str(&minify_css(NORMALIZE_CSS));
+    out.push_str(&minify_css(MAIN_CSS));
+    out.push_str(&minify_html(HTML_BODY));
+
+    out
+}
+
 fn write_text(writer: &mut BufWriter<File>, text: &str) -> CompilerResult<()> {
     write!(writer, "{}", text).map_err(CompilerError::OutputWrite)
 }
@@ -58,10 +70,8 @@ pub fn create_output_file(args: &CliArgs, lines: &[String]) -> CompilerResult<()
     let mut writer = BufWriter::new(output);
 
     // html skeleton
-    write_text(&mut writer, HTML_HEAD)?;
-    write_text(&mut writer, NORMALIZE_CSS)?;
-    write_text(&mut writer, MAIN_CSS)?;
-    write_text(&mut writer, HTML_BODY)?;
+    let head = html_head();
+    write_text(&mut writer, &head)?;
 
     // write parsed lines
     for line in lines {
@@ -69,7 +79,8 @@ pub fn create_output_file(args: &CliArgs, lines: &[String]) -> CompilerResult<()
     }
 
     // finish html skeleton
-    write_text(&mut writer, HTML_FOOT)?;
+    let foot = minify_html(HTML_FOOT);
+    write_text(&mut writer, &foot)?;
 
     Ok(())
 }

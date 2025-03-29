@@ -1,4 +1,5 @@
 mod error;
+mod utils;
 mod cli;
 mod parser;
 mod html;

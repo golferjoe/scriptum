@@ -570,6 +570,7 @@ dependencies = [
  "clap-help",
  "colored",
  "mime_guess",
+ "regex",
  "thiserror 2.0.12",
 ]
 
